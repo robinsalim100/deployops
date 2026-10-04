@@ -12,7 +12,7 @@ def register_routes(app):
 
     @app.route("/")
     def home():
-        return "Welcome to DeployOps!"
+        return "Welcome to DeployOps Platform!"
 
     # ----------------------------------------------
     # Health
