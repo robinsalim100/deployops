@@ -3,14 +3,19 @@ from flask import Flask
 from app.extensions import db
 
 
-def create_app():
+def create_app(test_config=None):
 
     app = Flask(__name__)
 
-    # SQLite configuration
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///deployops.db"
+    # Default application configuration
+    app.config.from_mapping(
+        SQLALCHEMY_DATABASE_URI="sqlite:///deployops.db",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    )
 
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    # Override configuration when testing
+    if test_config:
+        app.config.update(test_config)
 
     # Initialize database
     db.init_app(app)
@@ -22,8 +27,9 @@ def create_app():
     from app.routes import register_routes
     register_routes(app)
 
-    # Create database tables if they don't exist
+    # Create database tables
     with app.app_context():
         db.create_all()
 
     return app
+
